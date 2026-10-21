@@ -1,6 +1,8 @@
 Calculadora de Precios y Ganancia
 
-Esta es una herramienta diseñada para ayudar a pequeños emprendedores a calcular sus costos, precios de venta y ganancias.
+Descripción
+
+Herramienta diseñada para ayudar a pequeños emprendedores a calcular sus costos, establecer precios de venta y conocer sus ganancias.
 
 Funciones
 
@@ -10,7 +12,7 @@ Funciones
 
 Objetivo
 
-Facilitar la administración de pequeños emprendimientos.
+Facilitar la administración de pequeños emprendimientos mediante una herramienta práctica y sencilla.
 
 Autora
 
