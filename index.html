@@ -1,1 +1,239 @@
 index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Precios y Ganancias</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 14px;
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      color: #222;
+    }
+
+    main {
+      max-width: 720px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 28px #17255414;
+    }
+
+    h1 {
+      color: #243b80;
+    }
+
+    p {
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 22px 0;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd2df;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #3156c8;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2545a7;
+    }
+
+    .results {
+      display: none;
+      margin-top: 22px;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
+
+    .result {
+      padding: 16px;
+      border-radius: 12px;
+      background: #eef2ff;
+    }
+
+    .result span {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .result strong {
+      color: #243b80;
+      font-size: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .error {
+      color: #b42318;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <h1>Calculadora de Precios y Ganancias</h1>
+
+      <p>
+        Calculá el costo por unidad, el precio de venta
+        sugerido y la ganancia de tu emprendimiento.
+      </p>
+
+      <div class="grid">
+        <div>
+          <label for="cost">Costo total de la compra ($)</label>
+          <input id="cost" type="number" min="0"
+            step="0.01" value="50000">
+        </div>
+
+        <div>
+          <label for="quantity">Cantidad de unidades</label>
+          <input id="quantity" type="number" min="1"
+            step="1" value="20">
+        </div>
+
+        <div>
+          <label for="margin">Ganancia deseada (%)</label>
+          <input id="margin" type="number" min="0"
+            step="0.1" value="30">
+        </div>
+
+        <div>
+          <label for="extra">Otros gastos totales ($)</label>
+          <input id="extra" type="number" min="0"
+            step="0.01" value="0">
+        </div>
+      </div>
+
+      <button id="calculate" type="button">
+        Calcular resultados
+      </button>
+
+      <p id="error" class="error" role="alert"></p>
+
+      <div id="results" class="results" aria-live="polite">
+        <div class="result">
+          <span>Costo por unidad</span>
+          <strong id="unitCost">$0</strong>
+        </div>
+
+        <div class="result">
+          <span>Precio sugerido por unidad</span>
+          <strong id="salePrice">$0</strong>
+        </div>
+
+        <div class="result">
+          <span>Ganancia total estimada</span>
+          <strong id="profit">$0</strong>
+        </div>
+      </div>
+
+      <footer>
+        Estimación educativa. No contempla impuestos,
+        comisiones ni gastos que no hayas ingresado.
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const money = value =>
+      new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        maximumFractionDigits: 2
+      }).format(value);
+
+    document.getElementById("calculate")
+      .addEventListener("click", () => {
+        const cost = Number(
+          document.getElementById("cost").value
+        );
+        const quantity = Number(
+          document.getElementById("quantity").value
+        );
+        const margin = Number(
+          document.getElementById("margin").value
+        );
+        const extra = Number(
+          document.getElementById("extra").value
+        );
+
+        const error = document.getElementById("error");
+        const results = document.getElementById("results");
+
+        if (
+          ![cost, quantity, margin, extra].every(Number.isFinite) ||
+          cost < 0 || quantity <= 0 ||
+          margin < 0 || extra < 0
+        ) {
+          error.textContent =
+            "Ingresá valores válidos. Los costos y gastos no pueden ser negativos y la cantidad debe ser mayor que cero.";
+          results.style.display = "none";
+          return;
+        }
+
+        const totalCost = cost + extra;
+        const unitCost = totalCost / quantity;
+        const salePrice = unitCost * (1 + margin / 100);
+        const totalProfit = salePrice * quantity - totalCost;
+
+        document.getElementById("unitCost").textContent =
+          money(unitCost);
+
+        document.getElementById("salePrice").textContent =
+          money(salePrice);
+
+        document.getElementById("profit").textContent =
+          money(totalProfit);
+
+        error.textContent = "";
+        results.style.display = "grid";
+      });
+
+    document.getElementById("calculate").click();
+  </script>
+</body>
+</html>
